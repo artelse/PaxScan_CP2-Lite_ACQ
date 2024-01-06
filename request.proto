@@ -1,0 +1,82 @@
+message VSPRequest {
+  optional uint32 f1 = 1; // type=1 offset=0 size=4
+  optional string f2 = 2; // type=16 offset=5 size=100
+  optional OPEN f3 = 3; // type=17 offset=106 size=1
+  optional OPEN_EVENT f4 = 4; // type=17 offset=108 size=4
+  optional OPEN_DATA f5 = 5; // type=17 offset=110 size=4
+  optional CLOSE f6 = 6; // type=17 offset=118 size=4
+  optional INFO f7 = 7; // type=17 offset=11d size=1
+  optional FILE_WRITE f8 = 8; // type=17 offset=120 size=104
+  optional FILE_READ f9 = 9; // type=17 offset=225 size=100
+  optional USERSET_LOAD f10 = 10; // type=17 offset=328 size=c
+  optional TIMER f11 = 11; // type=17 offset=338 size=10
+  optional EXPOSURE_TIME f12 = 12; // type=17 offset=34c size=8
+  optional TRIGGER_SOURCE f13 = 13; // type=17 offset=358 size=4
+  optional ACQUISITION f14 = 14; // type=17 offset=360 size=4
+  optional ACQUISITION_TYPE f15 = 15; // type=17 offset=368 size=4
+  optional TRANSFER f100 = 100; // type=17 offset=370 size=8
+  optional TEST_PATTERN f101 = 101; // type=17 offset=37c size=4
+  optional SHOCK_HISTORY f102 = 102; // type=17 offset=381 size=1
+  optional REAL_TIME_CLOCK f103 = 103; // type=17 offset=388 size=10
+  optional DCDS f104 = 104; // type=17 offset=39c size=8
+  optional AUTO_TRIGGER f105 = 105; // type=17 offset=3a8 size=10
+};
+message OPEN {
+};
+message OPEN_EVENT {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+};
+message OPEN_DATA {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+};
+message CLOSE {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+};
+message INFO {
+};
+message FILE_WRITE {
+  required string f1 = 1; // type=6 offset=0 size=100
+  required int32 f2 = 2; // type=0 offset=100 size=4
+};
+message FILE_READ {
+  required string f1 = 1; // type=6 offset=0 size=100
+};
+message USERSET_LOAD {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+  optional int32 f2 = 2; // type=10 offset=8 size=4
+};
+message TIMER {
+  optional int32 f1 = 1; // type=10 offset=4 size=4
+  optional int32 f2 = 2; // type=10 offset=c size=4
+};
+message EXPOSURE_TIME {
+  optional int32 f1 = 1; // type=10 offset=4 size=4
+};
+message TRIGGER_SOURCE {
+  required uint32 f1 = 1; // type=1 offset=0 size=4
+};
+message ACQUISITION {
+  required uint32 f1 = 1; // type=1 offset=0 size=4
+};
+message ACQUISITION_TYPE {
+  required uint32 f1 = 1; // type=1 offset=0 size=4
+};
+message TRANSFER {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+  required int32 f2 = 2; // type=0 offset=4 size=4
+};
+message TEST_PATTERN {
+  required uint32 f1 = 1; // type=1 offset=0 size=4
+};
+message SHOCK_HISTORY {
+};
+message REAL_TIME_CLOCK {
+  optional int64 f1 = 1; // type=10 offset=8 size=8
+};
+message DCDS {
+  optional int32 f1 = 1; // type=10 offset=4 size=4
+};
+message AUTO_TRIGGER {
+  optional int32 f1 = 1; // type=10 offset=4 size=4
+  optional int32 f2 = 2; // type=10 offset=c size=4
+};

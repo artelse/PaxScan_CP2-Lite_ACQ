@@ -1,0 +1,66 @@
+message VSPResponse {
+  optional fixed32 f1 = 1; // type=3 offset=0 size=4
+  optional string f2 = 2; // type=16 offset=5 size=100
+  optional Msg_15b6f0 f3 = 3; // type=17 offset=108 size=4
+  optional Msg_15b6c0 f4 = 4; // type=17 offset=10d size=1
+  optional Msg_15b690 f5 = 5; // type=17 offset=10f size=1
+  optional Msg_15b660 f6 = 6; // type=17 offset=111 size=1
+  optional Msg_15b630 f7 = 7; // type=17 offset=114 size=4
+  optional Msg_15b5f0 f8 = 8; // type=17 offset=119 size=1
+  optional Msg_15b5b0 f9 = 9; // type=17 offset=11c size=4
+  optional Msg_15b570 f10 = 10; // type=17 offset=121 size=1
+  optional Msg_15b530 f11 = 11; // type=17 offset=123 size=1
+  optional Msg_15b500 f12 = 12; // type=17 offset=125 size=1
+  optional Msg_15b4d0 f13 = 13; // type=17 offset=127 size=1
+  optional Msg_15b4a0 f14 = 14; // type=17 offset=129 size=1
+  optional Msg_15b470 f15 = 15; // type=17 offset=12b size=1
+  optional Msg_15b420 f100 = 100; // type=17 offset=130 size=8
+  optional Msg_15b3f0 f101 = 101; // type=17 offset=139 size=1
+  optional Msg_15b3c0 f102 = 102; // type=17 offset=13b size=281
+  optional Msg_15b390 f103 = 103; // type=17 offset=3bd size=1
+  optional Msg_15b360 f104 = 104; // type=17 offset=3bf size=1
+  optional Msg_15b320 f105 = 105; // type=17 offset=3c1 size=1
+};
+message Msg_15b6f0 {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+};
+message Msg_15b6c0 {
+};
+message Msg_15b690 {
+};
+message Msg_15b660 {
+};
+message Msg_15b630 {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+};
+message Msg_15b5f0 {
+};
+message Msg_15b5b0 {
+  required int32 f1 = 1; // type=0 offset=0 size=4
+};
+message Msg_15b570 {
+};
+message Msg_15b530 {
+};
+message Msg_15b500 {
+};
+message Msg_15b4d0 {
+};
+message Msg_15b4a0 {
+};
+message Msg_15b470 {
+};
+message Msg_15b420 {
+  optional int32 f1 = 1; // type=10 offset=4 size=4
+};
+message Msg_15b3f0 {
+};
+message Msg_15b3c0 {
+  optional string f1 = 1; // type=16 offset=1 size=280
+};
+message Msg_15b390 {
+};
+message Msg_15b360 {
+};
+message Msg_15b320 {
+};
