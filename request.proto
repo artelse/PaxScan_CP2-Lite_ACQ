@@ -1,82 +1,146 @@
+enum IDS {
+  OPEN = 3;
+  OPEN_EVENT = 4;
+  OPEN_DATA = 5;
+  CLOSE = 6;
+  INFO = 7;
+  FILE_WRITE = 8;
+  FILE_READ = 9;
+  USERSET_LOAD = 10;
+  TIMER = 11;
+  EXPOSURE_TIME = 12;
+  TRIGGER_SOURCE = 13;
+  ACQUISITION = 14;
+  ACQUISITION_TYPE = 15;
+
+  TRANSFER = 100;
+  TEST_PATTERN = 101;
+  SHOCK_HISTORY = 102;
+  REAL_TIME_CLOCK = 103;
+  DCDS = 104;
+  AUTO_TRIGGER = 105;
+}
+
 message VSPRequest {
-  optional uint32 f1 = 1; // type=1 offset=0 size=4
-  optional string f2 = 2; // type=16 offset=5 size=100
-  optional OPEN f3 = 3; // type=17 offset=106 size=1
-  optional OPEN_EVENT f4 = 4; // type=17 offset=108 size=4
-  optional OPEN_DATA f5 = 5; // type=17 offset=110 size=4
-  optional CLOSE f6 = 6; // type=17 offset=118 size=4
-  optional INFO f7 = 7; // type=17 offset=11d size=1
-  optional FILE_WRITE f8 = 8; // type=17 offset=120 size=104
-  optional FILE_READ f9 = 9; // type=17 offset=225 size=100
-  optional USERSET_LOAD f10 = 10; // type=17 offset=328 size=c
-  optional TIMER f11 = 11; // type=17 offset=338 size=10
-  optional EXPOSURE_TIME f12 = 12; // type=17 offset=34c size=8
-  optional TRIGGER_SOURCE f13 = 13; // type=17 offset=358 size=4
-  optional ACQUISITION f14 = 14; // type=17 offset=360 size=4
-  optional ACQUISITION_TYPE f15 = 15; // type=17 offset=368 size=4
-  optional TRANSFER f100 = 100; // type=17 offset=370 size=8
-  optional TEST_PATTERN f101 = 101; // type=17 offset=37c size=4
-  optional SHOCK_HISTORY f102 = 102; // type=17 offset=381 size=1
-  optional REAL_TIME_CLOCK f103 = 103; // type=17 offset=388 size=10
-  optional DCDS f104 = 104; // type=17 offset=39c size=8
-  optional AUTO_TRIGGER f105 = 105; // type=17 offset=3a8 size=10
+  required IDS ID = 1;
+  optional string message = 2;
+
+  optional OPEN_RQ open = 3;
+  optional OPEN_EVENT_RQ open_event = 4;
+  optional OPEN_DATA_RQ open_data = 5;
+
+  optional CLOSE_RQ close = 6;
+  optional INFO_RQ info = 7;
+  optional FILE_WRITE_RQ file_write = 8;
+  optional FILE_READ_RQ file_read = 9;
+  optional USERSET_LOAD_RQ userset_load = 10;
+  optional TIMER_RQ timer = 11;
+  optional EXPOSURE_TIME_RQ exposure_time = 12;
+  optional TRIGGER_SOURCE_RQ trigger_source = 13;
+  optional ACQUISITION_RQ acquisition = 14;
+  optional ACQUISITION_TYPE_RQ acquisition_type = 15;
+
+  optional TRANSFER_RQ transfer = 100;
+  optional TEST_PATTERN_RQ test_pattern = 101;
+  optional SHOCK_HISTORY_RQ shock_history = 102;
+  optional REAL_TIME_CLOCK_RQ real_time_clock = 103;
+  optional DCDS_RQ dscd = 104;
+  optional AUTO_TRIGGER_RQ auto_trigger = 105;
 };
-message OPEN {
+
+message OPEN_RQ {
 };
-message OPEN_EVENT {
-  required int32 f1 = 1; // type=0 offset=0 size=4
+
+message OPEN_EVENT_RQ {
+  required int32 cookie = 1; // type=0 offset=0 size=4
 };
-message OPEN_DATA {
-  required int32 f1 = 1; // type=0 offset=0 size=4
+
+message OPEN_DATA_RQ {
+  required int32 cookie = 1; // type=0 offset=0 size=4
 };
-message CLOSE {
-  required int32 f1 = 1; // type=0 offset=0 size=4
+
+message CLOSE_RQ {
+  required int32 cookie = 1; // type=0 offset=0 size=4
 };
-message INFO {
+
+message INFO_RQ {
 };
-message FILE_WRITE {
+
+message FILE_WRITE_RQ {
   required string f1 = 1; // type=6 offset=0 size=100
   required int32 f2 = 2; // type=0 offset=100 size=4
 };
-message FILE_READ {
+
+message FILE_READ_RQ {
   required string f1 = 1; // type=6 offset=0 size=100
 };
-message USERSET_LOAD {
-  required int32 f1 = 1; // type=0 offset=0 size=4
-  optional int32 f2 = 2; // type=10 offset=8 size=4
+
+message USERSET_LOAD_RQ {
+  required int32 index = 1; // type=0 offset=0 size=4
+  optional int32 force = 2; // type=10 offset=8 size=4
 };
-message TIMER {
-  optional int32 f1 = 1; // type=10 offset=4 size=4
-  optional int32 f2 = 2; // type=10 offset=c size=4
+
+message TIMER_RQ {
+  optional int32 delay_in_us = 1; // type=10 offset=4 size=4
+  optional int32 duration_in_us = 2; // type=10 offset=c size=4
 };
-message EXPOSURE_TIME {
-  optional int32 f1 = 1; // type=10 offset=4 size=4
+
+message EXPOSURE_TIME_RQ {
+  optional int32 duration_in_ms = 1; // type=10 offset=4 size=4
 };
-message TRIGGER_SOURCE {
-  required uint32 f1 = 1; // type=1 offset=0 size=4
+
+enum TRIGGER_SOURCES {
+  TRIG_SOFTWARE = 1;
+  TRIG_TIMER = 2;
+  TRIG_LINE = 3;
 };
-message ACQUISITION {
-  required uint32 f1 = 1; // type=1 offset=0 size=4
+message TRIGGER_SOURCE_RQ {
+  required TRIGGER_SOURCES source = 1; // type=1 offset=0 size=4
 };
-message ACQUISITION_TYPE {
-  required uint32 f1 = 1; // type=1 offset=0 size=4
+
+enum ACQUISITION_OPERATIONS {
+  START = 1;
+  STOP = 2;
+  PREPARE = 3;
+  TRIGGER = 4;
+  CLEAR = 5;
+  END_EXPOSURE = 6;
 };
-message TRANSFER {
+message ACQUISITION_RQ {
+  required ACQUISITION_OPERATIONS operation = 1;
+};
+
+enum ACQUISITION_TYPES {
+  RAW_FRAME = 1;
+  CORRECTED_FRAME = 2;
+  OFFSET_CORRECTED_FRAME = 3;
+  GAIN_CORRECTED_FRAME = 4;
+}
+message ACQUISITION_TYPE_RQ {
+  required ACQUISITION_TYPES type = 1; // type=1 offset=0 size=4
+};
+
+message TRANSFER_RQ {
   required int32 f1 = 1; // type=0 offset=0 size=4
   required int32 f2 = 2; // type=0 offset=4 size=4
 };
-message TEST_PATTERN {
+
+message TEST_PATTERN_RQ {
   required uint32 f1 = 1; // type=1 offset=0 size=4
 };
-message SHOCK_HISTORY {
+
+message SHOCK_HISTORY_RQ {
 };
-message REAL_TIME_CLOCK {
-  optional int64 f1 = 1; // type=10 offset=8 size=8
+
+message REAL_TIME_CLOCK_RQ {
+  optional int64 timestamp = 1; // type=10 offset=8 size=8
 };
-message DCDS {
+
+message DCDS_RQ {
   optional int32 f1 = 1; // type=10 offset=4 size=4
 };
-message AUTO_TRIGGER {
+
+message AUTO_TRIGGER_RQ {
   optional int32 f1 = 1; // type=10 offset=4 size=4
   optional int32 f2 = 2; // type=10 offset=c size=4
 };

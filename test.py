@@ -1,16 +1,34 @@
 import socket
 import struct
-import sys
 import time
 import threading
 
-import request_pb2
-import response_pb2
+import request_pb2 as request
+import response_pb2 as response
 
 HOST = "192.168.1.77"
 PORT = 58680
 
+
+def tx_command(sock, command):
+    tx_data = command.SerializeToString()
+    tx_data = struct.pack('<I', len(tx_data) | 0x80000000) + tx_data
+    sock.sendall(tx_data)
+
+    rx_data = sock.recv(1024)
+    if len(rx_data) == 0:
+        raise Exception("received no data")
+
+    rx = response.VSPResponse()
+    rx.ParseFromString(rx_data[4:])
+    if rx.status != 0 or len(rx.message) > 0:
+        raise Exception(rx.message)
+
+    return rx
+
+
 def heartbeat():
+    print('Starting heartbeat loop..')
     i = 0
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         while 1:
@@ -19,26 +37,15 @@ def heartbeat():
             time.sleep(1)
 
 
-def event_loop(secret):
+def event_loop(cookie):
+    print('Starting event loop..')
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as event_sock:
         event_sock.connect((HOST, PORT))
 
-        event_req = request_pb2.VSPRequest()
-        event_req.f1 = 4
-        event_req.f4.f1 = secret
-        event_req = event_req.SerializeToString()
-        event_req = struct.pack('<I', len(event_req) | 0x80000000) + event_req
-        event_sock.sendall(event_req)
-
-        event_data = event_sock.recv(1024)
-        if len(event_data) == 0:
-            raise Exception("received no data")
-
-        event_resp = response_pb2.VSPResponse()
-        event_resp.ParseFromString(event_data[4:])
-        print(event_resp)
-        if len(event_resp.f2) > 0:
-            raise Exception(event_resp.f2)
+        event_command = request.VSPRequest()
+        event_command.ID = request.IDS.OPEN_EVENT
+        event_command.open_event.cookie = cookie
+        tx_command(event_sock, event_command)
 
         hb = threading.Thread(target=heartbeat)
         hb.start()
@@ -47,9 +54,9 @@ def event_loop(secret):
             event_data = event_sock.recv(1024)
             if len(event_data) == 0:
                 continue
-            event_resp = response_pb2.VSPResponse()
+            event_resp = response.VSPResponse()
             event_resp.ParseFromString(event_data[4:])
-            print("EVENT:", event_resp)
+            print("EVENT:", event_resp.message)
 
 
 def recvall(sock, n):
@@ -62,122 +69,66 @@ def recvall(sock, n):
     return d
 
 
-def data_loop(secret):
+def data_loop(cookie):
+    print('Starting data loop..')
     counter = 0
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as data_sock:
         data_sock.connect((HOST, PORT))
 
-        data_pkt = request_pb2.VSPRequest()
-        data_pkt.f1 = 5
-        data_pkt.f5.f1 = secret
-        data_pkt = data_pkt.SerializeToString()
-        data_pkt = struct.pack('<I', len(data_pkt) | 0x80000000) + data_pkt
-        data_sock.sendall(data_pkt)
-
-        data_data = data_sock.recv(1024)
-        if len(data_data) == 0:
-            raise Exception("received no data")
-
-        data_resp = response_pb2.VSPResponse()
-        data_resp.ParseFromString(data_data[4:])
-        print(data_resp)
-        if len(data_resp.f2) > 0:
-            raise Exception(data_resp.f2)
+        data_command = request.VSPRequest()
+        data_command.ID = request.IDS.OPEN_DATA
+        data_command.open_data.cookie = cookie
+        tx_command(data_sock, data_command)
 
         while 1:
             raw_msglen = recvall(data_sock, 4)
             if not raw_msglen:
                 return None
             msglen = struct.unpack('<I', raw_msglen)[0]
-            print(msglen)
+            print(f'Receiving {counter}.bin.. len:{msglen}')
 
             msgdata = recvall(data_sock, msglen)
-            print(len(msgdata))
+            print(f'Received {counter}.bin! len:{len(msgdata)}')
 
             with open(f"{counter}.bin", "wb") as file:
                 file.write(msgdata)
             counter += 1
 
 
-
 command_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 command_sock.connect((HOST, PORT))
 
-pkt = request_pb2.VSPRequest()
-pkt.f1 = 3
-pkt.f3.CopyFrom(request_pb2.OPEN())
-pkt = pkt.SerializeToString()
-pkt = struct.pack('<I', len(pkt) | 0x80000000) + pkt
-command_sock.sendall(pkt)
+print('Connecting..')
+command = request.VSPRequest()
+command.ID = request.IDS.OPEN
+command.open.CopyFrom(request.OPEN_RQ())
 
-data = command_sock.recv(1024)
-if len(data) == 0:
-    raise Exception("received no data")
+rsp = tx_command(command_sock, command)
 
-rsp = response_pb2.VSPResponse()
-rsp.ParseFromString(data[4:])
-print(rsp)
-if len(rsp.f2) > 0:
-    raise Exception(rsp.f2)
-
-event_thread = threading.Thread(target=event_loop, args=(rsp.f3.f1,))
+event_thread = threading.Thread(target=event_loop, args=(rsp.open.cookie,))
 event_thread.start()
 
-data_thread = threading.Thread(target=data_loop, args=(rsp.f3.f1,))
+data_thread = threading.Thread(target=data_loop, args=(rsp.open.cookie,))
 data_thread.start()
 
-# pkt = request_pb2.VSPRequest()
-# pkt.f1 = 15
-# pkt.f15.f1 = 2 #CORRECTED FRAME
-# pkt = pkt.SerializeToString()
-# pkt = struct.pack('<I', len(pkt) | 0x80000000) + pkt
-# command_sock.sendall(pkt)
-#
-# data = command_sock.recv(1024)
+time.sleep(1)
 
-# if len(data) == 0:
-#     raise Exception("received no data")
-# rsp.ParseFromString(data[4:])
-# print(rsp)
+print('ACQUISITION START..')
+command = request.VSPRequest()
+command.ID = request.IDS.ACQUISITION
+command.acquisition.operation = request.ACQUISITION_OPERATIONS.START
+tx_command(command_sock, command)
 
-pkt = request_pb2.VSPRequest()
-pkt.f1 = 14
-pkt.f14.f1 = 1 #START
-pkt = pkt.SerializeToString()
-pkt = struct.pack('<I', len(pkt) | 0x80000000) + pkt
-command_sock.sendall(pkt)
+print('ACQUISITION PREPARE..')
+command = request.VSPRequest()
+command.ID = request.IDS.ACQUISITION
+command.acquisition.operation = request.ACQUISITION_OPERATIONS.PREPARE
+tx_command(command_sock, command)
 
-data = command_sock.recv(1024)
-if len(data) == 0:
-    raise Exception("received no data")
-rsp.ParseFromString(data[4:])
-print(rsp)
+input("Press Enter to trigger...")
 
-
-pkt = request_pb2.VSPRequest()
-pkt.f1 = 14
-pkt.f14.f1 = 3 #PREPARE
-pkt = pkt.SerializeToString()
-pkt = struct.pack('<I', len(pkt) | 0x80000000) + pkt
-command_sock.sendall(pkt)
-
-data = command_sock.recv(1024)
-if len(data) == 0:
-    raise Exception("received no data")
-rsp.ParseFromString(data[4:])
-print(rsp)
-
-input("Press Enter to continue...")
-
-pkt = request_pb2.VSPRequest()
-pkt.f1 = 14
-pkt.f14.f1 = 4 #TRIGGER
-pkt = pkt.SerializeToString()
-pkt = struct.pack('<I', len(pkt) | 0x80000000) + pkt
-command_sock.sendall(pkt)
-
-data = command_sock.recv(1024)
-if len(data) == 0:
-    raise Exception("received no data")
-rsp.ParseFromString(data[4:])
-print(rsp)
+print('ACQUISITION TRIGGER..')
+command = request.VSPRequest()
+command.ID = request.IDS.ACQUISITION
+command.acquisition.operation = request.ACQUISITION_OPERATIONS.TRIGGER
+tx_command(command_sock, command)

@@ -1,66 +1,88 @@
 message VSPResponse {
-  optional fixed32 f1 = 1; // type=3 offset=0 size=4
-  optional string f2 = 2; // type=16 offset=5 size=100
-  optional Msg_15b6f0 f3 = 3; // type=17 offset=108 size=4
-  optional Msg_15b6c0 f4 = 4; // type=17 offset=10d size=1
-  optional Msg_15b690 f5 = 5; // type=17 offset=10f size=1
-  optional Msg_15b660 f6 = 6; // type=17 offset=111 size=1
-  optional Msg_15b630 f7 = 7; // type=17 offset=114 size=4
-  optional Msg_15b5f0 f8 = 8; // type=17 offset=119 size=1
-  optional Msg_15b5b0 f9 = 9; // type=17 offset=11c size=4
-  optional Msg_15b570 f10 = 10; // type=17 offset=121 size=1
-  optional Msg_15b530 f11 = 11; // type=17 offset=123 size=1
-  optional Msg_15b500 f12 = 12; // type=17 offset=125 size=1
-  optional Msg_15b4d0 f13 = 13; // type=17 offset=127 size=1
-  optional Msg_15b4a0 f14 = 14; // type=17 offset=129 size=1
-  optional Msg_15b470 f15 = 15; // type=17 offset=12b size=1
-  optional Msg_15b420 f100 = 100; // type=17 offset=130 size=8
-  optional Msg_15b3f0 f101 = 101; // type=17 offset=139 size=1
-  optional Msg_15b3c0 f102 = 102; // type=17 offset=13b size=281
-  optional Msg_15b390 f103 = 103; // type=17 offset=3bd size=1
-  optional Msg_15b360 f104 = 104; // type=17 offset=3bf size=1
-  optional Msg_15b320 f105 = 105; // type=17 offset=3c1 size=1
+  optional fixed32 status = 1;
+  optional string message = 2;
+
+  optional OPEN_RP open = 3;
+  optional OPEN_EVENT_RP open_event = 4;
+  optional OPEN_DATA_RP open_data = 5;
+
+  optional CLOSE_RP close = 6;
+  optional INFO_RP info = 7;
+  optional FILE_WRITE_RP file_write = 8;
+  optional FILE_READ_RP file_read = 9;
+  optional USERSET_LOAD_RP userset_load = 10;
+  optional TIMER_RP timer = 11;
+  optional EXPOSURE_TIME_RP exposure_time = 12;
+  optional TRIGGER_SOURCE_RP trigger_source = 13;
+  optional ACQUISITION_RP acquisition = 14;
+  optional ACQUISITION_TYPE_RP acquisition_type = 15;
+
+  optional TRANSFER_RP transfer = 100;
+  optional TEST_PATTERN_RP test_pattern = 101;
+  optional SHOCK_HISTORY_RP shock_history = 102;
+  optional REAL_TIME_CLOCK_RP real_time_clock = 103;
+  optional DCDS_RP dscd = 104;
+  optional AUTO_TRIGGER_RP auto_trigger = 105;
 };
-message Msg_15b6f0 {
-  required int32 f1 = 1; // type=0 offset=0 size=4
+
+message OPEN_RP {
+  required int32 cookie = 1;
 };
-message Msg_15b6c0 {
+
+message OPEN_EVENT_RP {
 };
-message Msg_15b690 {
+
+message OPEN_DATA_RP {
 };
-message Msg_15b660 {
+
+message CLOSE_RP {
 };
-message Msg_15b630 {
-  required int32 f1 = 1; // type=0 offset=0 size=4
+
+message INFO_RP {
+  required int32 f1 = 1;
 };
-message Msg_15b5f0 {
+
+message FILE_WRITE_RP {
 };
-message Msg_15b5b0 {
-  required int32 f1 = 1; // type=0 offset=0 size=4
+
+message FILE_READ_RP {
+  required int32 f1 = 1;
 };
-message Msg_15b570 {
+
+message USERSET_LOAD_RP {
 };
-message Msg_15b530 {
+
+message TIMER_RP {
 };
-message Msg_15b500 {
+
+message EXPOSURE_TIME_RP {
 };
-message Msg_15b4d0 {
+
+message TRIGGER_SOURCE_RP {
 };
-message Msg_15b4a0 {
+
+message ACQUISITION_RP {
 };
-message Msg_15b470 {
+
+message ACQUISITION_TYPE_RP {
 };
-message Msg_15b420 {
-  optional int32 f1 = 1; // type=10 offset=4 size=4
+
+message TRANSFER_RP {
+  optional int32 f1 = 1;
 };
-message Msg_15b3f0 {
+
+message TEST_PATTERN_RP {
 };
-message Msg_15b3c0 {
-  optional string f1 = 1; // type=16 offset=1 size=280
+
+message SHOCK_HISTORY_RP {
+  optional string f1 = 1;
 };
-message Msg_15b390 {
+
+message REAL_TIME_CLOCK_RP {
 };
-message Msg_15b360 {
+
+message DCDS_RP {
 };
-message Msg_15b320 {
+
+message AUTO_TRIGGER_RP {
 };
