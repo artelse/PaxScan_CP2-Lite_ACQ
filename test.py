@@ -113,6 +113,20 @@ data_thread.start()
 
 time.sleep(1)
 
+print('Loading userset..')
+command = request.VSPRequest()
+command.ID = request.IDS.USERSET_LOAD
+command.userset_load.index = 2
+command.userset_load.force = 1
+tx_command(command_sock, command)
+
+print('Enabling auto-trigger..')
+command = request.VSPRequest()
+command.ID = request.IDS.AUTO_TRIGGER
+command.auto_trigger.threshold = 1024
+command.auto_trigger.timeout = 0
+tx_command(command_sock, command)
+
 print('ACQUISITION START..')
 command = request.VSPRequest()
 command.ID = request.IDS.ACQUISITION
@@ -125,10 +139,12 @@ command.ID = request.IDS.ACQUISITION
 command.acquisition.operation = request.ACQUISITION_OPERATIONS.PREPARE
 tx_command(command_sock, command)
 
-input("Press Enter to trigger...")
+print('\r\nReady for exposure, toggle generator now')
 
-print('ACQUISITION TRIGGER..')
-command = request.VSPRequest()
-command.ID = request.IDS.ACQUISITION
-command.acquisition.operation = request.ACQUISITION_OPERATIONS.TRIGGER
-tx_command(command_sock, command)
+# input("Press Enter to trigger...")
+#
+# print('ACQUISITION TRIGGER..')
+# command = request.VSPRequest()
+# command.ID = request.IDS.ACQUISITION
+# command.acquisition.operation = request.ACQUISITION_OPERATIONS.TRIGGER
+# tx_command(command_sock, command)
